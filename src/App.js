@@ -1,10 +1,9 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import MainTable from './components/MainTable';
 import AggregatedTable from './components/AggregatedTable';
-import LineChart from './components/LineChart';
+import LineGraph from './components/LineGraph';
 import './App.css';
-import 'antd/dist/reset.css'; // Add this import for Ant Design styles
+import 'antd/dist/reset.css';
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -44,29 +43,57 @@ const App = () => {
   }, []);
 
   const handleRowClick = (row) => {
-    const yearData = {
-      year: row.year,
-      job_titles: data
-        .filter((item) => item.year === row.year)
-        .reduce((acc, item) => {
-          const existingJob = acc.find((job) => job.title === item.job_title);
-          if (existingJob) {
-            existingJob.count++;
-          } else {
-            acc.push({ title: item.job_title, count: 1 });
-          }
-          return acc;
-        }, []),
-    };
-    setSelectedYearData(yearData);
-  };
+    const year = row.year;
 
+    fetch("./data.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const yearData = {
+          year,
+          job_titles: data
+            .filter((item) => item.work_year === year)
+            .reduce((acc, item) => {
+              const existingJob = acc.find(
+                (job) => job.title === item.job_title
+              );
+              if (existingJob) {
+                existingJob.count++;
+              } else {
+                acc.push({ title: item.job_title, count: 1 });
+              }
+              return acc;
+            }, []),
+        };
+        setSelectedYearData(yearData);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+    // const yearData = {
+    //   year: row.year,
+    //   job_titles: data
+    //     .filter((item) => item.year === row.year)
+    //     .reduce((acc, item) => {
+    //       const existingJob = acc.find((job) => job.title === item.job_title);
+    //       if (existingJob) {
+    //         existingJob.count++;
+    //       } else {
+    //         acc.push({ title: item.job_title, count: 1 });
+    //       }
+    //       return acc;
+    //     }, []),
+    // };
+    // setSelectedYearData(yearData);
+  };
   return (
     <div className="App">
       <h1>ML Engineer Salaries</h1>
       <MainTable data={data} onRowClick={handleRowClick} />
       {selectedYearData && <AggregatedTable yearData={selectedYearData} />}
-      <LineChart data={data} />
+      <LineGraph data={data} />
     </div>
   );
 };
