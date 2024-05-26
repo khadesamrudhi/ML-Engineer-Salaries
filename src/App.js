@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import MainTable from './components/MainTable';
 import AggregatedTable from './components/AggregatedTable';
 import LineGraph from './components/LineGraph';
+import Chat from './components/Chat';
 import './App.css';
-import 'antd/dist/reset.css';
+// import 'antd/dist/reset.css';
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -72,28 +73,15 @@ const App = () => {
         setSelectedYearData(yearData);
       })
       .catch((error) => console.error("Error fetching data:", error));
-    // const yearData = {
-    //   year: row.year,
-    //   job_titles: data
-    //     .filter((item) => item.year === row.year)
-    //     .reduce((acc, item) => {
-    //       const existingJob = acc.find((job) => job.title === item.job_title);
-    //       if (existingJob) {
-    //         existingJob.count++;
-    //       } else {
-    //         acc.push({ title: item.job_title, count: 1 });
-    //       }
-    //       return acc;
-    //     }, []),
-    // };
-    // setSelectedYearData(yearData);
   };
+
   return (
     <div className="App">
       <h1>ML Engineer Salaries</h1>
       <MainTable data={data} onRowClick={handleRowClick} />
       {selectedYearData && <AggregatedTable yearData={selectedYearData} />}
       <LineGraph data={data} />
+      <Chat />
     </div>
   );
 };
