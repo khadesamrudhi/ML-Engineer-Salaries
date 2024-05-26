@@ -1,0 +1,20 @@
+.main-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.main-table th,
+.main-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.main-table th {
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
+.main-table tr:hover {
+  background-color: #f1f1f1;
+}
